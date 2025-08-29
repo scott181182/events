@@ -1,12 +1,12 @@
 # To use this Dockerfile, you have to set `output: 'standalone'` in your next.config.mjs file.
 # From https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
-FROM node:22.17.0 AS base
+FROM node:22.17.0-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-# RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -39,8 +39,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && \
   adduser --system --uid 1001 nextjs && \
   mkdir .next && \
-  chown nextjs:nodejs .next
-
+  chown nextjs:nodejs -R /app
 # Remove this line if you do not have this folder
 # COPY --from=builder /app/public ./public
 
@@ -49,6 +48,8 @@ RUN addgroup --system --gid 1001 nodejs && \
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Manually add musl version to make Alpine happy. 
+RUN npm install @libsql/linux-x64-musl && npm cache clean --force
 
 USER nextjs
 
