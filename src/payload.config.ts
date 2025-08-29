@@ -9,6 +9,7 @@ import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Events } from "./collections/Events";
 import { EventSeries } from "./collections/EventSeries";
+import { migrations } from "./migrations";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -31,6 +32,8 @@ export default buildConfig({
       url: process.env.DATABASE_URI || "",
     },
     idType: "uuid",
+    prodMigrations: migrations,
+    migrationDir: "./src/migrations",
   }),
   sharp,
   plugins: [
