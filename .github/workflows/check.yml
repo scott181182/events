@@ -21,7 +21,9 @@ jobs:
                 key: ${{runner.os}}-node-${{ hashFiles('yarn.lock') }}
           - name: Install Dependencies
             run: yarn install
+          - name: Generate Payload Types
+            run: yarn generate:types
+          - name: Run Next Build
+            run: yarn build
           - name: Run ESLint
             run: yarn lint
-          - name: Check Types
-            run: yarn tsc -p . --pretty
