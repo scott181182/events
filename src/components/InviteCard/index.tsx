@@ -1,4 +1,3 @@
-import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 import { default as dayjs, Dayjs } from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import timezone from "dayjs/plugin/timezone";
