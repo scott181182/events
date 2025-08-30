@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload";
 
-export const EventSeries: CollectionConfig = {
-  slug: "event-series",
+export const Websites: CollectionConfig = {
+  slug: "websites",
   admin: {
     useAsTitle: "name",
   },
@@ -12,14 +12,18 @@ export const EventSeries: CollectionConfig = {
       required: true,
     },
     {
-      name: "host",
+      name: "url",
       type: "text",
+      required: true,
     },
     {
-      name: "events",
+      name: "logo",
       type: "relationship",
-      relationTo: "events",
-      hasMany: true,
+      relationTo: "media",
+    },
+    {
+      name: "monochrome_icon_svg",
+      type: "text",
     },
   ],
 };
