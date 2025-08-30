@@ -25,8 +25,8 @@ async function fetchInviteCardDetails(eventId: string): Promise<InviteCardProps>
     collection: "events",
     id: eventId,
     populate: {
-      media: { url: true, alt: true, filename: true },
       "event-series": { name: true, host: true },
+      media: { url: true, alt: true, filename: true },
     },
   });
 
@@ -47,6 +47,9 @@ async function fetchInviteCardDetails(eventId: string): Promise<InviteCardProps>
     series: typeof event.series === "object" ? event.series : undefined,
     mapEmbedUrl: event.mapEmbedUrl,
     mapMeetUrl: event.mapMeetUrl,
+    details: event.details,
+    announcements: event.announcements,
+    links: event.links,
   };
 }
 
@@ -75,7 +78,8 @@ export default async function EventPage({ params }: PageProps) {
   const cardProps = await fetchInviteCardDetails(eventId);
 
   return (
-    <main className="w-screen h-screen flex justify-center items-center bg-cross">
+    <main className="w-screen min-h-screen flex justify-center items-center py-4">
+      <div className="fixed inset-0 bg-cross"></div>
       <InviteCard {...cardProps} />
     </main>
   );
