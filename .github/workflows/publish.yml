@@ -33,7 +33,7 @@ jobs:
             with:
                 tags: |
                     type=semver,pattern={{version}}
-                image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           - name: Build and Push Docker Image
             id: push
             uses: docker/build-push-action@v5
