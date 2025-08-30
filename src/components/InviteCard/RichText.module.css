@@ -1,0 +1,7 @@
+@reference "../../app/(frontend)/styles.css";
+
+.richTextDiv {
+    :global(h1),:global(h2),:global(h3) {
+        @apply text-2xl font-bold;
+    }
+}
