@@ -67,20 +67,28 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
-    events: Event;
+    announcements: Announcement;
     'event-series': EventSery;
+    events: Event;
+    media: Media;
+    users: User;
+    websites: Website;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    events: {
+      announcements: 'announcements';
+    };
+  };
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    events: EventsSelect<false> | EventsSelect<true>;
+    announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'event-series': EventSeriesSelect<false> | EventSeriesSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    websites: WebsitesSelect<false> | WebsitesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -119,6 +127,152 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcements".
+ */
+export interface Announcement {
+  id: string;
+  kind: 'info' | 'success' | 'warning' | 'error';
+  event?: (string | null) | Event;
+  'event-series'?: (string | null) | EventSery;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  timestamp: string;
+  timestamp_tz: SupportedTimezones;
+  location: string;
+  coverImage?: (string | null) | Media;
+  difficulty: string;
+  distance: number;
+  duration: string;
+  mapEmbedUrl?: string | null;
+  mapMeetUrl?: string | null;
+  details?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  announcements?: {
+    docs?: (string | Announcement)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  links?:
+    | {
+        href: string;
+        text?: string | null;
+        website?: (string | null) | Website;
+        id?: string | null;
+      }[]
+    | null;
+  comments?:
+    | {
+        text: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        author: string;
+        reactions?: {
+          [k: string]: number;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  reactions?: {
+    [k: string]: number;
+  };
+  series?: (string | null) | EventSery;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "websites".
+ */
+export interface Website {
+  id: string;
+  name: string;
+  url: string;
+  logo?: (string | null) | Media;
+  monochrome_icon_svg?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-series".
+ */
+export interface EventSery {
+  id: string;
+  name: string;
+  host?: string | null;
+  events?: (string | Event)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -143,76 +297,34 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events".
- */
-export interface Event {
-  id: string;
-  timestamp: string;
-  timestamp_tz: SupportedTimezones;
-  location: string;
-  coverImage?: (string | null) | Media;
-  difficulty: string;
-  distance: number;
-  duration: string;
-  mapEmbedUrl?: string | null;
-  mapMeetUrl?: string | null;
-  series?: (string | null) | EventSery;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-series".
- */
-export interface EventSery {
-  id: string;
-  name: string;
-  host?: string | null;
-  events?: (string | Event)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'announcements';
+        value: string | Announcement;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
+        relationTo: 'event-series';
+        value: string | EventSery;
       } | null)
     | ({
         relationTo: 'events';
         value: string | Event;
       } | null)
     | ({
-        relationTo: 'event-series';
-        value: string | EventSery;
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null)
+    | ({
+        relationTo: 'websites';
+        value: string | Website;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -258,6 +370,85 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcements_select".
+ */
+export interface AnnouncementsSelect<T extends boolean = true> {
+  kind?: T;
+  event?: T;
+  'event-series'?: T;
+  title?: T;
+  content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-series_select".
+ */
+export interface EventSeriesSelect<T extends boolean = true> {
+  name?: T;
+  host?: T;
+  events?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  timestamp?: T;
+  timestamp_tz?: T;
+  location?: T;
+  coverImage?: T;
+  difficulty?: T;
+  distance?: T;
+  duration?: T;
+  mapEmbedUrl?: T;
+  mapMeetUrl?: T;
+  details?: T;
+  announcements?: T;
+  links?:
+    | T
+    | {
+        href?: T;
+        text?: T;
+        website?: T;
+        id?: T;
+      };
+  comments?:
+    | T
+    | {
+        text?: T;
+        author?: T;
+        reactions?: T;
+        id?: T;
+      };
+  reactions?: T;
+  series?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -280,48 +471,13 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "websites_select".
  */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events_select".
- */
-export interface EventsSelect<T extends boolean = true> {
-  timestamp?: T;
-  timestamp_tz?: T;
-  location?: T;
-  coverImage?: T;
-  difficulty?: T;
-  distance?: T;
-  duration?: T;
-  mapEmbedUrl?: T;
-  mapMeetUrl?: T;
-  series?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-series_select".
- */
-export interface EventSeriesSelect<T extends boolean = true> {
+export interface WebsitesSelect<T extends boolean = true> {
   name?: T;
-  host?: T;
-  events?: T;
+  url?: T;
+  logo?: T;
+  monochrome_icon_svg?: T;
   updatedAt?: T;
   createdAt?: T;
 }

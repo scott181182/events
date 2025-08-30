@@ -1,7 +1,12 @@
 import { CollectionConfig } from "payload";
+import { linksField } from "./fields/links";
+import { commentsField, reactionField } from "./fields/comments";
 
 export const Events: CollectionConfig = {
   slug: "events",
+  admin: {
+    preview: ({ id }) => `/events/${id}`,
+  },
   fields: [
     {
       name: "timestamp",
@@ -47,7 +52,19 @@ export const Events: CollectionConfig = {
       name: "mapMeetUrl",
       type: "text",
     },
-
+    {
+      name: "details",
+      type: "richText",
+    },
+    {
+      name: "announcements",
+      type: "join",
+      collection: "announcements",
+      on: "event",
+    },
+    linksField,
+    commentsField,
+    reactionField,
     {
       name: "series",
       type: "relationship",
