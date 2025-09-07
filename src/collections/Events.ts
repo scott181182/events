@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload";
 import { linksField } from "./fields/links";
 import { commentsField, reactionField } from "./fields/comments";
+import { mapOptionsField } from "./fields/mapOptions";
 
 export const Events: CollectionConfig = {
   slug: "events",
@@ -72,6 +73,7 @@ export const Events: CollectionConfig = {
         },
       ],
     },
+    mapOptionsField,
     {
       name: "details",
       type: "richText",

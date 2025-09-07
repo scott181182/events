@@ -175,6 +175,10 @@ export interface Event {
     latitude?: number | null;
     longitude?: number | null;
   };
+  mapOptions?: {
+    zoom?: number;
+    center?: [] | [number] | [number, number];
+  };
   details?: {
     root: {
       type: string;
@@ -439,6 +443,7 @@ export interface EventsSelect<T extends boolean = true> {
         latitude?: T;
         longitude?: T;
       };
+  mapOptions?: T;
   details?: T;
   announcements?: T;
   links?:
