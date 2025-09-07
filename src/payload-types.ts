@@ -70,6 +70,7 @@ export interface Config {
     announcements: Announcement;
     'event-series': EventSery;
     events: Event;
+    locations: Location;
     media: Media;
     users: User;
     websites: Website;
@@ -86,6 +87,7 @@ export interface Config {
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'event-series': EventSeriesSelect<false> | EventSeriesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     websites: WebsitesSelect<false> | WebsitesSelect<true>;
@@ -161,13 +163,17 @@ export interface Event {
   id: string;
   timestamp: string;
   timestamp_tz: SupportedTimezones;
-  location: string;
+  location?: (string | null) | Location;
   coverImage?: (string | null) | Media;
   difficulty: string;
   distance: number;
   duration: string;
   mapEmbedUrl?: string | null;
   mapMeetUrl?: string | null;
+  meetCoordinates?: {
+    latitude?: number | null;
+    longitude?: number | null;
+  };
   details?: {
     root: {
       type: string;
@@ -224,6 +230,21 @@ export interface Event {
     [k: string]: number;
   };
   series?: (string | null) | EventSery;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: string;
+  name: string;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  postalCode?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -313,6 +334,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'events';
         value: string | Event;
+      } | null)
+    | ({
+        relationTo: 'locations';
+        value: string | Location;
       } | null)
     | ({
         relationTo: 'media';
@@ -406,6 +431,12 @@ export interface EventsSelect<T extends boolean = true> {
   duration?: T;
   mapEmbedUrl?: T;
   mapMeetUrl?: T;
+  meetCoordinates?:
+    | T
+    | {
+        latitude?: T;
+        longitude?: T;
+      };
   details?: T;
   announcements?: T;
   links?:
@@ -426,6 +457,20 @@ export interface EventsSelect<T extends boolean = true> {
       };
   reactions?: T;
   series?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  name?: T;
+  address?: T;
+  city?: T;
+  state?: T;
+  country?: T;
+  postalCode?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -21,8 +21,8 @@ export const Events: CollectionConfig = {
     },
     {
       name: "location",
-      type: "text",
-      required: true,
+      type: "relationship",
+      relationTo: "locations",
     },
     {
       name: "coverImage",
@@ -51,6 +51,20 @@ export const Events: CollectionConfig = {
     {
       name: "mapMeetUrl",
       type: "text",
+    },
+    {
+      name: "meetCoordinates",
+      type: "group",
+      fields: [
+        {
+          name: "latitude",
+          type: "number",
+        },
+        {
+          name: "longitude",
+          type: "number",
+        },
+      ],
     },
     {
       name: "details",
