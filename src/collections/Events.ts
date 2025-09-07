@@ -20,6 +20,12 @@ export const Events: CollectionConfig = {
       },
     },
     {
+      name: "name",
+      type: "text",
+      required: true,
+      defaultValue: "Hike",
+    },
+    {
       name: "location",
       type: "relationship",
       relationTo: "locations",

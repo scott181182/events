@@ -163,6 +163,7 @@ export interface Event {
   id: string;
   timestamp: string;
   timestamp_tz: SupportedTimezones;
+  name: string;
   location?: (string | null) | Location;
   coverImage?: (string | null) | Media;
   difficulty: string;
@@ -424,6 +425,7 @@ export interface EventSeriesSelect<T extends boolean = true> {
 export interface EventsSelect<T extends boolean = true> {
   timestamp?: T;
   timestamp_tz?: T;
+  name?: T;
   location?: T;
   coverImage?: T;
   difficulty?: T;
