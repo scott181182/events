@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload";
 import { linksField } from "./fields/links";
 import { commentsField, reactionField } from "./fields/comments";
+import { mapOptionsField } from "./fields/mapOptions";
 
 export const Events: CollectionConfig = {
   slug: "events",
@@ -20,9 +21,15 @@ export const Events: CollectionConfig = {
       },
     },
     {
-      name: "location",
+      name: "name",
       type: "text",
       required: true,
+      defaultValue: "Hike",
+    },
+    {
+      name: "location",
+      type: "relationship",
+      relationTo: "locations",
     },
     {
       name: "coverImage",
@@ -52,6 +59,21 @@ export const Events: CollectionConfig = {
       name: "mapMeetUrl",
       type: "text",
     },
+    {
+      name: "meetCoordinates",
+      type: "group",
+      fields: [
+        {
+          name: "latitude",
+          type: "number",
+        },
+        {
+          name: "longitude",
+          type: "number",
+        },
+      ],
+    },
+    mapOptionsField,
     {
       name: "details",
       type: "richText",

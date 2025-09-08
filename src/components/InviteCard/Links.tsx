@@ -23,9 +23,13 @@ export function LinkItem({ link }: Readonly<LinkItemProps>) {
 }
 
 export interface LinksProps {
-  links: NonNullable<Event["links"]>;
+  links: Event["links"];
 }
 export function Links({ links }: Readonly<LinksProps>) {
+  if (!links?.length) {
+    return;
+  }
+
   return (
     <article>
       <h2>Links</h2>
