@@ -3,10 +3,12 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 
-import type { Event } from "../../payload-types";
+import type { Event, Location } from "../../payload-types";
 import { Links } from "./Links";
 import { Details } from "./Details";
 import { Announcements } from "./Announcements";
+import { MeetupDirections } from "./MeetupDirections";
+import { InviteMap } from "./InviteMap";
 
 dayjs.extend(advancedFormat);
 dayjs.extend(timezone);
@@ -19,7 +21,8 @@ export interface Series {
 
 export interface InviteCardProps {
   day: string;
-  location: string;
+  name: string;
+  location?: Location;
   coverUrl?: string;
   coverAlt?: string;
   date: Dayjs;
@@ -27,8 +30,11 @@ export interface InviteCardProps {
   distance: string;
   duration: string;
   series?: Series | null;
+
   mapEmbedUrl?: string | null;
   mapMeetUrl?: string | null;
+  meetCoordinates?: Event["meetCoordinates"];
+  mapOptions?: Event["mapOptions"];
 
   details?: Event["details"];
   announcements?: Event["announcements"];
@@ -37,6 +43,7 @@ export interface InviteCardProps {
 
 export function InviteCard({
   day,
+  name,
   location,
   coverUrl,
   coverAlt,
@@ -48,6 +55,8 @@ export function InviteCard({
 
   mapEmbedUrl,
   mapMeetUrl,
+  meetCoordinates,
+  mapOptions,
 
   details,
   announcements,
@@ -57,7 +66,7 @@ export function InviteCard({
     <div className="card bg-base-300 max-w-4xl shadow-lg">
       {coverUrl && (
         <figure className="relative">
-          <img src={coverUrl} alt={coverAlt ?? location} />
+          <img src={coverUrl} alt={coverAlt || location?.name || name} />
         </figure>
       )}
       <div className="card-body">
@@ -65,7 +74,7 @@ export function InviteCard({
           <span className="-mb-2">
             You&apos;re invited to a <em>{day}</em> hike at
           </span>
-          <h1 className="card-title">{location}</h1>
+          <h1 className="card-title">{name}</h1>
           {series && (
             <small>
               {series.host ? (
@@ -82,39 +91,35 @@ export function InviteCard({
         </header>
         <section>
           <article className="grid grid-cols-1 md:grid-cols-2 grow">
-            <dl className="grid grid-cols-[max-content_auto] gap-x-4 *:even:font-bold">
-              <dt>Date</dt>
-              <dd>{date.format("dddd, MMMM Do")}</dd>
-              <dt>Meet Time</dt>
-              <dd>{date.format("h:mma z")}</dd>
-              <dt>Hike Time</dt>
-              <dd>{date.add(10, "minutes").format("h:mma z")}</dd>
-              <dt>Difficulty</dt>
-              <dd>{difficulty}</dd>
-              <dt>Distance</dt>
-              <dd>{distance}</dd>
-              <dt>Est. Duration</dt>
-              <dd>{duration}</dd>
-            </dl>
+            <div>
+              <dl className="grid grid-cols-[max-content_auto] gap-x-4 *:even:font-bold">
+                <dt>Date</dt>
+                <dd>{date.format("dddd, MMMM Do")}</dd>
+                <dt>Meet Time</dt>
+                <dd>{date.format("h:mma z")}</dd>
+                <dt>Hike Time</dt>
+                <dd>{date.add(10, "minutes").format("h:mma z")}</dd>
+                <dt>Difficulty</dt>
+                <dd>{difficulty}</dd>
+                <dt>Distance</dt>
+                <dd>{distance}</dd>
+                <dt>Est. Duration</dt>
+                <dd>{duration}</dd>
+              </dl>
+            </div>
             <div className="flex flex-col items-center text-center">
-              {mapEmbedUrl && (
-                <iframe
-                  title="Map"
-                  src={mapEmbedUrl}
-                  className="w-full min-h-32"
-                  style={{ border: "1px solid black" }}
-                ></iframe>
-              )}
-              {mapMeetUrl && (
-                <a href={mapMeetUrl} target="_blank">
-                  Meet Here
-                </a>
-              )}
+              <InviteMap
+                className="w-full h-full min-h-48"
+                meetCoordinates={meetCoordinates}
+                mapOptions={mapOptions}
+                mapEmbedUrl={mapEmbedUrl || undefined}
+              />
+              <MeetupDirections meetCoordinates={meetCoordinates} mapMeetUrl={mapMeetUrl} />
             </div>
           </article>
-          {announcements && <Announcements announcements={announcements} />}
-          {details && <Details details={details} />}
-          {links && links.length > 0 && <Links links={links} />}
+          <Announcements announcements={announcements} />
+          <Details details={details} />
+          <Links links={links} />
         </section>
         <footer>{series?.host && <div>Let {series.host} know if you&apos;ll be able to make it!</div>}</footer>
       </div>

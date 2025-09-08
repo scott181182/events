@@ -1,10 +1,9 @@
-import { getPayload } from "payload";
 import dayjs, { Dayjs } from "dayjs";
+import { Metadata, ResolvingMetadata } from "next";
+import { getPayload } from "payload";
 
-import { PageProps } from ".next/types/app/(frontend)/events/[eventId]/page";
 import { InviteCard, InviteCardProps } from "@/components/InviteCard";
 import config from "@/payload.config";
-import { Metadata, ResolvingMetadata } from "next";
 
 function getTimeOfDay(date: Dayjs): string {
   if (date.hour() < 12) {
@@ -38,7 +37,8 @@ async function fetchInviteCardDetails(eventId: string): Promise<InviteCardProps>
 
   return {
     day: day,
-    location: event.location,
+    name: event.name,
+    location: event.location && typeof event.location === "object" ? event.location : undefined,
     coverUrl: coverUrl,
     date: date,
     difficulty: event.difficulty,
@@ -47,17 +47,22 @@ async function fetchInviteCardDetails(eventId: string): Promise<InviteCardProps>
     series: typeof event.series === "object" ? event.series : undefined,
     mapEmbedUrl: event.mapEmbedUrl,
     mapMeetUrl: event.mapMeetUrl,
+    meetCoordinates: event.meetCoordinates,
+    mapOptions: event.mapOptions,
     details: event.details,
     announcements: event.announcements,
     links: event.links,
   };
 }
 
+interface PageProps {
+  params: { eventId: string };
+}
 export async function generateMetadata({ params }: PageProps, _parent: ResolvingMetadata): Promise<Metadata> {
   const { eventId } = await params;
   const cardProps = await fetchInviteCardDetails(eventId);
 
-  const title = `${cardProps.day} Hike Invite`;
+  const title = cardProps.name;
   const description = `You're invited to a hike on ${cardProps.day}. Click for more details!`;
 
   return {

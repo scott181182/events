@@ -2,14 +2,18 @@ import type { Event } from "../../payload-types";
 import { RichText } from "./RichText";
 
 export interface AnnouncementsProps {
-  announcements: NonNullable<Event["announcements"]>;
+  announcements: Event["announcements"];
 }
 export function Announcements({ announcements }: Readonly<AnnouncementsProps>) {
+  if (!announcements?.docs?.length) {
+    return null;
+  }
+
   return (
     <div>
       <h2>Announcements</h2>
       <div className="flex flex-col gap-2 py-2">
-        {announcements.docs?.map((d) => {
+        {announcements.docs.map((d) => {
           if (typeof d !== "object") {
             return null;
           }
