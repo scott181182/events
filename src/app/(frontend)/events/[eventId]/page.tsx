@@ -56,7 +56,7 @@ async function fetchInviteCardDetails(eventId: string): Promise<InviteCardProps>
 }
 
 interface PageProps {
-  params: { eventId: string };
+  params: Promise<{ eventId: string }>;
 }
 export async function generateMetadata({ params }: PageProps, _parent: ResolvingMetadata): Promise<Metadata> {
   const { eventId } = await params;
