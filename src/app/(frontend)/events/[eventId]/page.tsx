@@ -16,7 +16,7 @@ function getTimeOfDay(date: Dayjs): string {
     return "night";
   }
 }
-async function fetchInviteCardDetails(eventId: string): Promise<InviteCardProps> {
+export async function fetchInviteCardDetails(eventId: string): Promise<InviteCardProps> {
   const payloadConfig = await config;
   const payload = await getPayload({ config: payloadConfig });
 
